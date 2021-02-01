@@ -19,7 +19,7 @@ Unregister-PackageSource -Name nugetRepository
 Register-PSRepository -Default
 Install-PackageProvider -Name NuGet
 
-Register-PackageSource -provider NuGet -name nugetRepository -location https://api.nuget.org/v3/index.json 
+Register-PackageSource -provider NuGet -name nugetRepository -location "https://api.nuget.org/v3/index.json"
 Install-Package Exchange.WebServices.Managed.Api -ProviderName NuGet -source nugetRepository
 Import-module "$ENV:ProgramFiles\PackageManagement\NuGet\Packages\Exchange.WebServices.Managed.Api.2.2.1.2\lib\net35\Microsoft.Exchange.WebServices.dll"
 
