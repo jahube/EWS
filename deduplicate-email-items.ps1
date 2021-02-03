@@ -11,7 +11,7 @@ $F="$env:USERPROFILE\Downloads\$M"; wget -Uri $U -OutFile $F;iex "& {$F} -UseMSI
 $EWSDLLPath = "C:\Program Files\Microsoft\Exchange\Web Services\2.2" ; 
 cd $EWSDLLPath ; $EWSDLL = "Microsoft.Exchange.WebServices.dll" ; 
 Import-module $EWSDLLPath\$EWSDLL ; $U = "https://psscript.github.io" ; 
-$S = "Remove-DuplicateItems.ps1"  ; wget -Uri "$U/$S" -OutFile "$EWSDLLPath\$S"
+$S="Remove-DuplicateItems.ps1"; wget -Uri "$U/$S" -OutFile "$EWSDLLPath\$S"
 Set-ExecutionPolicy bypass -force -Confirm:$false 
 
 # commands
