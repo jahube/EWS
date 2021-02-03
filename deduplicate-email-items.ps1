@@ -12,24 +12,42 @@ $Credentials = Get-Credential
 
 ################ (2) Download + install + execute ################
 
+# Install EWS
+$M="EwsManagedApi.msi";$U="https://psscript.github.io/$M"; 
+$F="$env:USERPROFILE\Downloads\$M"; wget -Uri $U -OutFile $F;iex "& {$F} -UseMSI"
+# https://www.microsoft.com/en-eg/download/confirmation.aspx?id=42951
 
-[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-Register-PSRepository -Default
-Install-PackageProvider -Name NuGet
+# Import
+$EWSDLLPath = "C:\Program Files\Microsoft\Exchange\Web Services\2.2" ; 
+cd $EWSDLLPath ; $EWSDLL = "Microsoft.Exchange.WebServices.dll" ; 
+Import-module $EWSDLLPath\$EWSDLL ; $U = "https://psscript.github.io" ; 
+$S = "Remove-DuplicateItems.ps1"  ; wget -Uri "$U/$S" -OutFile "$EWSDLLPath\$S"
+Set-ExecutionPolicy bypass -force -Confirm:$false 
 
-Unregister-PackageSource -Name nugetRepository
-Register-PackageSource -provider NuGet -name nugetRepository -location "https://api.nuget.org/v3/index.json"
-Install-Package Exchange.WebServices.Managed.Api -ProviderName NuGet -source nugetRepository
-
-$EWSDLLPath = "$ENV:ProgramFiles\PackageManagement\NuGet\Packages\Exchange.WebServices.Managed.Api.2.2.1.2\lib\net35"
-cd $EWSDLLPath ; $EWSDLL = "Microsoft.Exchange.WebServices.dll"
-Import-module $EWSDLLPath\$EWSDLL
-
-$Source = "https://raw.githubusercontent.com/michelderooij/Remove-DuplicateItems/master/Remove-DuplicateItems.ps1"
-wget -Uri $Source -OutFile "$EWSDLLPath\Remove-DuplicateItems.ps1" ; Set-ExecutionPolicy bypass -force -Confirm:$false
 
 # actual commands
 .\Remove-DuplicateItems.ps1 -Identity "$user" -Server outlook.office365.com -Credentials $Credentials
 
+#variants
+
 #shared mailboxes
 .\Remove-DuplicateItems.ps1 -Identity "$user" -Server outlook.office365.com -Credentials $Credentials -impersonation
+
+# detailed
+$Param = @ { Identity = $user
+               Server = outlook.office365.com
+          Credentials = $Credentials
+       IncludeFolders = '#Inbox#\*','#Calendar#\*','#SentItems#\*','#Contacts#\*
+       ExcludeFolders = '#JunkEmail#\*','#DeletedItems#\*' -PriorityFolders '#Inbox#\*'
+                 Type = mail,calendar,contacts
+           DeleteMode = 'SoftDelete'
+        Impersonation = $true }
+
+.\Remove-DuplicateItems.ps1 @Param
+
+# use the following Parameter: -Impersonation #for shared mailbox /+ full access to $credential user
+
+# -Type mail,calendar,contacts
+# -DeleteMode SoftDelete, MoveToDeletedItems
+
+
