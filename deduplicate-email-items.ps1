@@ -28,9 +28,11 @@ Set-ExecutionPolicy bypass -force -Confirm:$false
 # actual commands
 .\Remove-DuplicateItems.ps1 -Identity "$user" -Server outlook.office365.com -Credentials $Credentials
 
-#variants
 
-#shared mailboxes
+
+# other variants
+      #shared mailboxes
+
 .\Remove-DuplicateItems.ps1 -Identity "$user" -Server outlook.office365.com -Credentials $Credentials -impersonation
 
 # detailed
