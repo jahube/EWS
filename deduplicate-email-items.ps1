@@ -2,16 +2,6 @@
 # Autor's page: https://eightwone.com/2013/06/21/removing-duplicate-items-from-a-mailbox/
 #########################################################################################
 
-# NOTE: for shared mailbox use parameter -Impersonation + assign full access
-
-################### (1) Modify + Run Variables ###################
-
-$user = "affected@user.com"
-
-$Credentials = Get-Credential   
-
-################ (2) Download + install + execute ################
-
 # Install EWS
 $M="EwsManagedApi.msi";$U="https://psscript.github.io/$M"; 
 $F="$env:USERPROFILE\Downloads\$M"; wget -Uri $U -OutFile $F;iex "& {$F} -UseMSI"
@@ -24,14 +14,16 @@ Import-module $EWSDLLPath\$EWSDLL ; $U = "https://psscript.github.io" ;
 $S = "Remove-DuplicateItems.ps1"  ; wget -Uri "$U/$S" -OutFile "$EWSDLLPath\$S"
 Set-ExecutionPolicy bypass -force -Confirm:$false 
 
+# commands
 
-# actual commands
-.\Remove-DuplicateItems.ps1 -Identity "$user" -Server outlook.office365.com -Credentials $Credentials
+$user = "affected@user.com" #<< Change affected user
 
+.\Remove-DuplicateItems.ps1 -Identity "affected@user.com" -Server outlook.office365.com -Credentials (Get-Credential $user)
 
+#########################################################################################
 
-# other variants
       #shared mailboxes
+# NOTE: for shared mailbox use parameter -Impersonation + assign full access
 
 .\Remove-DuplicateItems.ps1 -Identity "$user" -Server outlook.office365.com -Credentials $Credentials -impersonation
 
